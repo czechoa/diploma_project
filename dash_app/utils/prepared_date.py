@@ -19,7 +19,7 @@ def maper_text_function(row, mapper_values,target_col):
     target = mapper_values[abs(row[target_col])]
 
 
-    return {'number_of_sentences': n_of_sentences, 'number_of_words': n_of_words, 'number_of_characters': len_text, 'mapper_target': target}
+    return {'liczba_zdań': n_of_sentences, 'liczba_słów': n_of_words, 'liczba_znaków': len_text, 'ocena_tekst': target}
 
 
 def count_characters(text):
@@ -40,7 +40,6 @@ def load_dataset_from_hugging_face(name=None, mapper_values=None, target_col=Non
     name = "clarin-pl/polemo2-official" if name is None else name
 
     dataDict = load_dataset(name)
-
 
     mapper_function = add_maper_values_to_mapper_function(mapper_values,target_col)
 
