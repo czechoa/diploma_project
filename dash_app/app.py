@@ -3,9 +3,7 @@ from dash import dcc, html
 from dash.dependencies import Input, Output
 
 from dash_app.utils.dataset import DataSet
-from dash_app.utils.plots import create_graf_histogram, create_violin_plots, create_correlation_plots
-
-app = Dash(__name__)
+from dash_app.utils.plots import create_graf_histogram, create_violin_plots, create_correlation_plots, create_bar_plots
 
 db_information = [{
     'name': "clarin-pl/polemo2-official",
@@ -20,22 +18,29 @@ db_information = [{
 ]
 
 db_dict = {values['name']: DataSet(**values) for values in db_information}
-print(db_dict["clarin-pl/polemo2-official"].data)
 
-app.layout = html.Div([dcc.Dropdown(list(db_dict.keys()), list(db_dict.keys())[0], id='Dropdown-db'
+app = Dash(__name__)
 
-                                    ),
+app.layout = html.Div([
+    dcc.Dropdown(list(db_dict.keys()), list(db_dict.keys())[0], id='Dropdown-db'
+                 ),
 
-                       dcc.Graph(id='target-graph',  # hoverData={'points': [{'customdata': 'Japan'}]}
-                                 ),
+    dcc.Graph(id='target-graph',  # hoverData={'points': [{'customdata': 'Japan'}]}
+              ),
 
-                       dcc.Graph(id='violin-graph',  # hoverData={'points': [{'customdata': 'Japan'}]}
-                                 ),
+    dcc.Graph(id='violin-graph',  # hoverData={'points': [{'customdata': 'Japan'}]}
+              ),
 
-                       dcc.Graph(id='correlation-graph',  # hoverData={'points': [{'customdata': 'Japan'}]}
-                                 )
+    dcc.Graph(id='correlation-graph',  # hoverData={'points': [{'customdata': 'Japan'}]}
+              ),
 
-                       ])
+    dcc.Dropdown(id='Dropdown-words', searchable=False
+                 ),
+
+    dcc.Graph(id='bar-graph',  # hoverData={'points': [{'customdata': 'Japan'}]}
+              )
+
+])
 
 
 @app.callback(Output('target-graph', 'figure'),
@@ -66,6 +71,29 @@ def update_violin_graphs(selected_db_name):
     correlation_plots = create_correlation_plots(dataset.data)
 
     return correlation_plots
+
+
+@app.callback(Output('Dropdown-words', 'options'),
+              Output('Dropdown-words', 'value'),
+
+              Input('Dropdown-db', 'value'))
+def update_dropdown(selected_db_name):
+    dataset = db_dict[selected_db_name]
+    print(dataset.mapper_values.values())
+    list_values = list(dataset.mapper_values.values())
+    return list(dataset.mapper_values.values()), list_values[0]
+
+
+@app.callback(Output('bar-graph', 'figure'),
+              Input('Dropdown-db', 'value'),
+              Input('Dropdown-words', 'value')
+              )
+def update_bar_graph(selected_db, selected_group):
+    dataset = db_dict[selected_db]
+    most_common_words = dataset.common_words[selected_group]
+    most_common_adj_adv = dataset.common_words_adj_adv[selected_group]
+    fig = create_bar_plots(most_common_words, most_common_adj_adv)
+    return fig
 
 
 if __name__ == '__main__':

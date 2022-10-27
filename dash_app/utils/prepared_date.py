@@ -1,15 +1,18 @@
 import re
 
+import psutil
 from datasets import load_dataset
+
+from dash_app.utils.text_processing import tokenizing_text, get_adj_adv_from_text
 
 pl_char = 'żźćńółęąś'
 
 
 def add_maper_values_to_mapper_function(mapper_values, target_col):
-    return lambda x: maper_text_function(x, mapper_values,target_col)
+    return lambda x: maper_text_function(x, mapper_values, target_col)
 
 
-def maper_text_function(row, mapper_values,target_col):
+def maper_text_function(row, mapper_values, target_col, ):
     text = row['text']
 
     n_of_sentences = count_sentences(text)
@@ -17,9 +20,11 @@ def maper_text_function(row, mapper_values,target_col):
     len_text = count_characters(text)
 
     target = mapper_values[abs(row[target_col])]
+    token_text = tokenizing_text(text)
+    token_adj_adv = get_adj_adv_from_text(text)
 
-
-    return {'liczba_zdań': n_of_sentences, 'liczba_słów': n_of_words, 'liczba_znaków': len_text, 'ocena_tekst': target}
+    return {'liczba_zdań': n_of_sentences, 'liczba_słów': n_of_words, 'liczba_znaków': len_text, 'ocena_tekst': target,
+            'token_tekst': token_text, 'token_adj_adv': token_adj_adv}
 
 
 def count_characters(text):
@@ -41,8 +46,8 @@ def load_dataset_from_hugging_face(name=None, mapper_values=None, target_col=Non
 
     dataDict = load_dataset(name)
 
-    mapper_function = add_maper_values_to_mapper_function(mapper_values,target_col)
+    mapper_function = add_maper_values_to_mapper_function(mapper_values, target_col)
 
-    dataDict = dataDict.map(mapper_function)
+    dataDict = dataDict.map(mapper_function, num_proc=psutil.cpu_count(logical=True), )
 
     return dataDict['train']
