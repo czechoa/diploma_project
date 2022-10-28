@@ -33,7 +33,7 @@ def create_violin_plots(dataset):
         fig.add_trace(go.Violin(y=dataset[col], box_visible=True, line_color='black', meanline_visible=True,
                                    fillcolor='lightseagreen', opacity=0.6, x0=col.replace('_', " ")), row=1, col=i + 1)
 
-    fig.update_layout(title_x=0.5, autosize=True, title_text="Tekst statystyk", showlegend=False)
+    fig.update_layout(title_x=0.5, autosize=True, title_text="Długość tekst", showlegend=False)
 
     return fig
 

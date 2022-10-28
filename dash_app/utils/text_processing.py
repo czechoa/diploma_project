@@ -16,5 +16,6 @@ def get_adj_adv_from_text(token_text):
     return token_text
 
 # print(tokenizing_text('Ala ma mały pokój oraz ma małą łazienkę'))
+
 #  token.pos_
 # print(tokenizing_text('źle zła'))

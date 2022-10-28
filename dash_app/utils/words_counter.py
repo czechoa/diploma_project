@@ -23,10 +23,11 @@ def count_most_frequent_words_apply(col='token_tekst', the_most_common=10):
                                                    the_most_common)
 
 
-def count_most_frequent_words_to_groupby(data, col):
-    data = data.to_pandas()
-
-    common_words = data.groupby('ocena_tekst').apply(count_most_frequent_words_apply(col, 20))
+def count_most_frequent_words_to_groupby(datadict, col):
+    common_words = {}
+    for set_name in datadict:
+        data = datadict[set_name].to_pandas()
+        common_words[set_name] = data.groupby('ocena_tekst').apply(count_most_frequent_words_apply(col, 20))
     return common_words
 
 # common_words = data.groupby('ocena_tekst').apply(count_most_frequent_words_to_groupby('token_tekst', 20))

@@ -50,4 +50,4 @@ def load_dataset_from_hugging_face(name=None, mapper_values=None, target_col=Non
 
     dataDict = dataDict.map(mapper_function, num_proc=psutil.cpu_count(logical=True), )
 
-    return dataDict['train']
+    return dataDict
