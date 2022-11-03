@@ -1,5 +1,5 @@
-from dash_app.utils.prepared_date import load_dataset_from_hugging_face
-from dash_app.utils.words_counter import count_most_frequent_words_to_groupby
+from dash_app.backend.utils.prepared_date import load_dataset_from_hugging_face
+from dash_app.backend.utils.words_counter import count_most_frequent_words_to_groupby
 
 
 class DataSet:

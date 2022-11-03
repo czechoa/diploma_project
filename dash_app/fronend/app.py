@@ -2,8 +2,8 @@ from dash import Dash
 from dash import dcc, html
 from dash.dependencies import Input, Output
 
-from dash_app.utils.dataset import DataSet
-from dash_app.utils.plots import create_graf_histogram, create_violin_plots, create_correlation_plots, create_bar_plots
+from dash_app.backend.utils.dataset import DataSet
+from dash_app.fronend.utils.plots import create_graf_histogram, create_violin_plots, create_correlation_plots, create_bar_plots
 
 db_information = [{
     'name': "clarin-pl/polemo2-official",
@@ -40,7 +40,7 @@ app.layout = html.Div([
     dcc.Graph(id='correlation-graph',
               ),
 
-    dcc.RadioItems(id='Dropdown-words',
+    dcc.Checklist(id='Dropdown-words',
                  ),
 
     dcc.Graph(id='bar-graph',  # hoverData={'points': [{'customdata': 'Japan'}]}
@@ -96,7 +96,7 @@ def update_violin_graphs(selected_db_name, set_name):
 def update_dropdown(selected_db_name):
     dataset = db_dict[selected_db_name]
     list_values = list(dataset.mapper_values.values())
-    return list(dataset.mapper_values.values()), list_values[0]
+    return list(dataset.mapper_values.values()), list_values
 
 
 @app.callback(Output('bar-graph', 'figure'),
@@ -107,9 +107,13 @@ def update_dropdown(selected_db_name):
               )
 def update_bar_graph(selected_db, set_name, selected_group):
     dataset = db_dict[selected_db]
-    most_common_words = dataset.common_words[set_name][selected_group]
-    most_common_adj_adv = dataset.common_words_adj_adv[set_name][selected_group]
-    fig = create_bar_plots(most_common_words, most_common_adj_adv)
+    # most_common_words = dataset.common_words[set_name][selected_group]
+    # most_common_adj_adv = dataset.common_words_adj_adv[set_name][selected_group]
+    print(selected_group)
+    most_common_words = dataset.common_words[set_name]
+    most_common_adj_adv = dataset.common_words_adj_adv[set_name]
+
+    fig = create_bar_plots(most_common_words, most_common_adj_adv,selected_group)
     return fig
 
 

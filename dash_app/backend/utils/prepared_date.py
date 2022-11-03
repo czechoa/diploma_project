@@ -3,7 +3,7 @@ import re
 import psutil
 from datasets import load_dataset
 
-from dash_app.utils.text_processing import tokenizing_text, get_adj_adv_from_text
+from dash_app.backend.utils.text_processing import tokenizing_text, get_adj_adv_from_text
 
 pl_char = 'żźćńółęąś'
 

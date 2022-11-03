@@ -1,6 +1,7 @@
 from collections import Counter
 
 import numpy as np
+import pandas as pd
 
 
 def count_most_frequent_words(text, divider=1, most_common=10):
@@ -27,7 +28,14 @@ def count_most_frequent_words_to_groupby(datadict, col):
     common_words = {}
     for set_name in datadict:
         data = datadict[set_name].to_pandas()
-        common_words[set_name] = data.groupby('ocena_tekst').apply(count_most_frequent_words_apply(col, 20))
+
+        data = data.groupby('ocena_tekst').apply(count_most_frequent_words_apply(col, 10)).explode()
+
+        data = pd.DataFrame(data=data.to_list(), columns=['word', 'count'],
+                            index=data.index).reset_index()
+        data['count'] = data['count'].astype(float)
+        common_words[set_name] = data.sort_values('count', ascending=False)
+
     return common_words
 
 # common_words = data.groupby('ocena_tekst').apply(count_most_frequent_words_to_groupby('token_tekst', 20))
