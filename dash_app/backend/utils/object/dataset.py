@@ -1,6 +1,6 @@
-from dash_app.backend.utils.merge_datasets.merge import merge_datasets
+from dash_app.backend.utils.nlp.words_counter import count_most_frequent_words_to_groupby
+from dash_app.backend.utils.object.merge_datasets.merge import merge_datasets
 from dash_app.backend.utils.prepared_date import load_dataset_from_hugging_face
-from dash_app.backend.utils.words_counter import count_most_frequent_words_to_groupby
 
 
 class DataSet:
@@ -15,9 +15,11 @@ class DataSet:
             self.data = merge_datasets(*merged_Dataset)
 
         self.common_words = count_most_frequent_words_to_groupby(self.data, "token_tekst")
+
         self.common_words_adj_adv = count_most_frequent_words_to_groupby(self.data, "token_adj_adv")
 
         self.subset_of_two_words = count_most_frequent_words_to_groupby(self.data, "subset_of_two_words")
+
         self.subset_of_three_words = count_most_frequent_words_to_groupby(self.data, "subset_of_three_words")
 
 

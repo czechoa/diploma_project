@@ -26,7 +26,6 @@ def tokenizing_text_with_pos(text):
         if word.pos_ != 'NOUN':
             print(word.text, word.pos_, word.dep_)
 
-
 # print(tokenizing_text_with_pos('Ala ma mały pokój oraz ma małą łazienkę! oraz wdziwc'))
 
 #  token.pos_

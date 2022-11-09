@@ -1,77 +1,17 @@
 import plotly.express as px
-from dash import Dash, dcc, html, dash_table
+from dash import Dash, html
 from dash.dependencies import Input, Output
 
-from dash_app.backend.utils.dataset import DataSet
-from dash_app.fronend.utils.plots import create_graf_histogram, create_violin_plots, create_correlation_plots, \
+from dash_app.backend.db_dictonary import innit_dash_app
+from dash_app.fronend.dash_layout import create_dash_app_layout
+from dash_app.fronend.utils.plots.plots import create_graf_histogram, create_violin_plots, create_correlation_plots, \
     create_bar_plots
-
-
-def innit_dash_app():
-    db_information = [{
-        'name': "clarin-pl/polemo2-official",
-        'target_col': 'target',
-        'mapper_values': {1: 'negatywne', 3: 'dwuznaczne', 0: 'neutralne', 2: 'pozytywne'}},
-
-        {'name': 'allegro_reviews',
-         'target_col': 'rating',
-         'mapper_values': {1: 'bardzo negatywne', 2: 'negatywne', 3: 'neutralne dwuznaczne', 4: 'pozytywne',
-                           5: 'bardzo pozytywne'}}
-
-    ]
-
-    db_dict = {values['name']: DataSet(**values) for values in db_information}
-
-    db_dict['połączone'] = DataSet('merge', {0: 'negatywne', 1: 'pozytywne'}, 'ocena_tekstu', db_dict.values())
-
-    return db_dict
-
 
 db_dict = innit_dash_app()
 
 app = Dash(__name__)
 
-app.layout = html.Div([
-
-    dcc.Dropdown(list(db_dict.keys()), list(db_dict.keys())[0], id='Dropdown-db'
-                 ),
-
-    dcc.RadioItems(['train', 'validation', 'test'], 'train', id='Radio-items-set'
-
-                   ),
-
-    dcc.Graph(id='target-graph',
-              ),
-
-    dcc.Graph(id='violin-graph',
-              ),
-
-    dcc.Graph(id='correlation-graph',
-              ),
-
-    dcc.Checklist(id='Dropdown-words',
-                  # inline=True
-                  ),
-
-    dcc.Graph(id='bar-graph',  # hoverData={'points': [{'customdata': 'Japan'}]}
-              ),
-
-    dash_table.DataTable(
-        style_data={
-            'whiteSpace': 'normal',
-            'height': 'auto',
-            'overflow': 'hidden',
-            'textOverflow': 'ellipsis',
-            # 'textAlign': 'left'
-
-        },
-        style_cell={'textAlign': 'left'},  # left align text in columns for readability
-        page_size=5,
-
-        id='table_reviews'
-    )
-
-])
+app.layout = create_dash_app_layout(db_dict)
 
 
 @app.callback(Output('target-graph', 'figure'),
@@ -122,18 +62,12 @@ def update_dropdown(selected_db_name):
     colors = px.colors.qualitative.Alphabet
 
     options = [{"label": html.Label([str(value)],
-                                  style={'color': color, 'font-size': 20
-                                         }),
+                                    style={'color': color, 'font-size': 20
+                                           }),
                 "value": str(value)
                 }
                for value, color in zip(list_values, colors[:len(list_values)])
                ]
-
-    # options = [{"label": value,
-    #                     "value": value
-    # }
-    # for value, color in zip(list_values, colors[:len(list_values)])
-    # ]
 
     return options, list_values
 
@@ -161,7 +95,6 @@ def update_bar_graph(selected_db, set_name, selected_group):
 
 @app.callback(
     Output('table_reviews', 'data'),
-    # Output('table_reviews', 'tooltip_data'),
     Input('Dropdown-db', 'value'),
     Input('Radio-items-set', 'value'),
     Input('Dropdown-words', 'value')
