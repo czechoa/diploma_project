@@ -1,5 +1,6 @@
 import re
 
+import numpy as np
 import psutil
 from datasets import load_dataset
 
@@ -12,6 +13,16 @@ def add_maper_values_to_mapper_function(mapper_values, target_col):
     return lambda x: maper_text_function(x, mapper_values, target_col)
 
 
+def get_subset_of_two_words(text):
+    if len(text) > 2:
+        return list(np.char.array(text[:-1]) + " " + np.char.array(text[1:]))
+    return list(" ")
+
+
+def get_subset_of_three_words(text):
+    return list(np.char.array(text[:-2]) + " " + np.char.array(text[1:-1]) + " " + np.char.array(text[2:]))
+
+
 def maper_text_function(row, mapper_values, target_col, ):
     text = row['text']
 
@@ -20,11 +31,18 @@ def maper_text_function(row, mapper_values, target_col, ):
     len_text = count_characters(text)
 
     target = mapper_values[abs(row[target_col])]
+
     token_text = tokenizing_text(text)
     token_adj_adv = get_adj_adv_from_text(text)
 
+    subset_of_two_words = get_subset_of_two_words(token_text)
+    subset_of_three_words = get_subset_of_three_words(token_text)
+
     return {'liczba_zdań': n_of_sentences, 'liczba_słów': n_of_words, 'liczba_znaków': len_text, 'ocena_tekst': target,
-            'token_tekst': token_text, 'token_adj_adv': token_adj_adv}
+            'token_tekst': token_text, 'token_adj_adv': token_adj_adv,
+            'subset_of_two_words': subset_of_two_words,
+            'subset_of_three_words': subset_of_three_words
+            }
 
 
 def count_characters(text):
@@ -48,6 +66,12 @@ def load_dataset_from_hugging_face(name=None, mapper_values=None, target_col=Non
 
     mapper_function = add_maper_values_to_mapper_function(mapper_values, target_col)
 
-    dataDict = dataDict.map(mapper_function, num_proc=psutil.cpu_count(logical=True), )
+    # dataDict = dataDict.filter(lambda example: example["text"] )
+
+    dataDict = dataDict.map(mapper_function, num_proc=psutil.cpu_count(logical=True))
+
+    # print('\n' * 5, dataDict, '\n' * 5)
+    # dataDict = dataDict.filter(lambda row: row['token_tekst'], num_proc=psutil.cpu_count(logical=True))
+    # print('\n' * 5, dataDict, '\n' * 5)
 
     return dataDict
