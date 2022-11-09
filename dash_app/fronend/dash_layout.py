@@ -16,7 +16,7 @@ def create_dash_app_layout(db_dict):
 
         dcc.Graph(id='correlation-graph', ),
 
-        dcc.Checklist(id='Dropdown-words', # inline=True
+        dcc.Checklist(id='Dropdown-words',  # inline=True
                       ),
 
         dcc.Graph(id='bar-graph',  # hoverData={'points': [{'customdata': 'Japan'}]}
@@ -24,14 +24,12 @@ def create_dash_app_layout(db_dict):
 
         dash_table.DataTable(
             style_data={'whiteSpace': 'normal', 'height': 'auto', 'overflow': 'hidden', 'textOverflow': 'ellipsis',
-                # 'textAlign': 'left'
+                        # 'textAlign': 'left'
 
-            }, style_cell={'textAlign': 'left'},  # left align text in columns for readability
+                        }, style_cell={'textAlign': 'left'},  # left align text in columns for readability
             page_size=5,
 
             id='table_reviews')
 
     ])
     return layout
-
-#

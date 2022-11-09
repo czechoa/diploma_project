@@ -1,9 +1,9 @@
-import plotly.express as px
 from dash import Dash, html
 from dash.dependencies import Input, Output
 
 from dash_app.backend.db_dictonary import innit_dash_app
 from dash_app.fronend.dash_layout import create_dash_app_layout
+from dash_app.fronend.utils.plots.colors import default_colors
 from dash_app.fronend.utils.plots.plots import create_graf_histogram, create_violin_plots, create_correlation_plots, \
     create_bar_plots
 
@@ -59,14 +59,12 @@ def update_dropdown(selected_db_name):
     dataset = db_dict[selected_db_name]
     list_values = list(dataset.mapper_values.values())
 
-    colors = px.colors.qualitative.Alphabet
-
     options = [{"label": html.Label([str(value)],
                                     style={'color': color, 'font-size': 20
                                            }),
                 "value": str(value)
                 }
-               for value, color in zip(list_values, colors[:len(list_values)])
+               for value, color in zip(list_values, default_colors[:len(list_values)])
                ]
 
     return options, list_values
