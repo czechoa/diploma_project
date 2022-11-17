@@ -1,7 +1,7 @@
 from dash_app.backend.utils.object.dataset import DataSet
 
 
-def innit_dash_app():
+def load_datasets():
     db_information = [{
         'name': "clarin-pl/polemo2-official",
         'target_col': 'target',

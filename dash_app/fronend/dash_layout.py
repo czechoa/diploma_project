@@ -16,6 +16,10 @@ def create_dash_app_layout(db_dict):
 
         dcc.Graph(id='correlation-graph', ),
 
+        dcc.Graph(id='number_of_multiples'),
+
+        dcc.Graph(id='inverse_cumulative_hist'),
+
         dcc.Checklist(id='Dropdown-words',  # inline=True
                       ),
 

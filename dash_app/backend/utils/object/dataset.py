@@ -1,4 +1,5 @@
-from dash_app.backend.utils.nlp.words_counter import count_most_frequent_words_to_groupby
+from dash_app.backend.utils.nlp.words_counter import count_most_frequent_words_to_groupby, \
+    count_frequency_of_word_occurrence
 from dash_app.backend.utils.object.merge_datasets.merge import merge_datasets
 from dash_app.backend.utils.prepared_date import load_dataset_from_hugging_face
 
@@ -22,5 +23,4 @@ class DataSet:
 
         self.subset_of_three_words = count_most_frequent_words_to_groupby(self.data, "subset_of_three_words")
 
-
-
+        self.frequency_of_word_occurrence = count_frequency_of_word_occurrence(self.data)

@@ -1,30 +1,44 @@
-# from collections import Counter
+from collections import Counter
 
-# import numpy as np
+import numpy as np
 import pandas as pd
 
 
 # from sklearn.feature_extraction.text import CountVectorizer
 
 
-# def count_most_frequent_words(text, divider=1, most_common=10):
-#     if isinstance(text, str):
-#         result_counter = Counter(text.split())
-#
-#     elif isinstance(text, list):
-#         # result_counter = Counter(" ".join([" ".join(x) for x in text]).split()).most_common(most_common)
-#         result_counter = Counter(text)
-#
-#     else:
-#         raise TypeError("text should be list or str")
-#
-#     divider = sum(result_counter.values())
-#     result_counter = result_counter.most_common(most_common)
-#
-#     result_counter = np.array(result_counter)
-#     result_counter[:, 1] = result_counter[:, 1].astype(float) / divider
-#
-#     return result_counter
+def count_most_frequent_words(text, divider=1, most_common=10):
+    if isinstance(text, str):
+        result_counter = Counter(text.split())
+
+    elif isinstance(text, list):
+        # result_counter = Counter(" ".join([" ".join(x) for x in text]).split()).most_common(most_common)
+        result_counter = Counter(text)
+
+    else:
+        raise TypeError("text should be list or str")
+
+    divider = sum(result_counter.values())
+    # result_counter = result_counter.most_common(most_common)
+
+    result_counter = np.array(result_counter)
+    result_counter[:, 1] = result_counter[:, 1].astype(float) / divider
+
+    return result_counter
+
+
+def count_frequency_of_word_occurrence(datadict: list):
+    results_counter = {}
+
+    for set_name in datadict:
+        token_tekst = datadict[set_name]['token_tekst']
+
+        token_tekst = " ".join(map(lambda x: " ".join(x), token_tekst))
+
+        result_counter = Counter(token_tekst.split())
+        # results_counter[set_name] = np.array(list(result_counter.items()))
+        results_counter[set_name] = result_counter.values()
+    return results_counter
 
 
 # def count_documnet_frequency_by_CountVectorizer(token_tekst, divider, most_common):

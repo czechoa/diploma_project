@@ -1,13 +1,14 @@
+import pandas as pd
 from dash import Dash, html
 from dash.dependencies import Input, Output
 
-from dash_app.backend.db_dictonary import innit_dash_app
+from dash_app.backend.db_dictonary import load_datasets
 from dash_app.fronend.dash_layout import create_dash_app_layout
 from dash_app.fronend.utils.plots.colors import default_colors
 from dash_app.fronend.utils.plots.plots import create_graf_histogram, create_violin_plots, create_correlation_plots, \
-    create_bar_plots
+    create_bar_plots, create_line_plot, create_bar_pdf_plot
 
-db_dict = innit_dash_app()
+db_dict = load_datasets()
 
 app = Dash(__name__)
 
@@ -48,6 +49,37 @@ def update_violin_graphs(selected_db_name, set_name):
     correlation_plots = create_correlation_plots(dataset.data[set_name])
 
     return correlation_plots
+
+
+@app.callback(Output('number_of_multiples', 'figure'),
+
+              Input('Dropdown-db', 'value'),
+              Input('Radio-items-set', 'value')
+              )
+def update_number_of_multiples_graphs(selected_db_name, set_name):
+    dataset = db_dict[selected_db_name]
+
+    frequency_of_word = pd.Series(dataset.frequency_of_word_occurrence[set_name])
+    n_words = len(frequency_of_word)
+    pdf = frequency_of_word.value_counts().sort_index() / n_words
+    return create_bar_pdf_plot(pdf)
+
+
+@app.callback(Output('inverse_cumulative_hist', 'figure'),
+
+              Input('Dropdown-db', 'value'),
+              Input('Radio-items-set', 'value')
+              )
+def update_inverse_cumulative_hist_graphs(selected_db_name, set_name):
+    dataset = db_dict[selected_db_name]
+
+    frequency_of_word = pd.Series(dataset.frequency_of_word_occurrence[set_name])
+    n_words = len(frequency_of_word)
+    # pdf = frequency_of_word.value_counts().sort_index().cumsum()
+    inverse_cumulative = 1 - frequency_of_word.value_counts().sort_index().cumsum() / n_words
+    inverse_cumulative = pd.concat([pd.Series([1]), inverse_cumulative], ignore_index=True)
+
+    return create_line_plot(inverse_cumulative)
 
 
 @app.callback(Output('Dropdown-words', 'options'),

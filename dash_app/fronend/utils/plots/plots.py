@@ -1,7 +1,9 @@
 import plotly.express as px
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
+
 from dash_app.fronend.utils.plots.colors import default_colors
+
 
 def create_graf_histogram(data: list, maper_values, title='Rozkład odpowiedzi', label_name='ocena_tekst'):
     target = data[label_name]
@@ -9,7 +11,7 @@ def create_graf_histogram(data: list, maper_values, title='Rozkład odpowiedzi',
     fig = px.histogram(x=target, category_orders={'x': list(maper_values.values())},
                        histnorm='percent',
                        labels={'x': 'ocena'}, title=title,
-                       color_discrete_sequence = default_colors
+                       color_discrete_sequence=default_colors
                        )
 
     fig.update_layout(title_x=0.5, title_font_size=25, autosize=True,  # line_color='black',
@@ -19,6 +21,36 @@ def create_graf_histogram(data: list, maper_values, title='Rozkład odpowiedzi',
                       )
     fig.update_yaxes(title_text="Procent")
 
+    return fig
+
+def create_bar_pdf_plot(pdf):
+    fig = px.bar(x=pdf.index, y=pdf, title='Funkcja gęstości prawdopodobieństwa (miara pdf)',
+                  range_x=[0,10]
+                 )
+
+    fig.update_yaxes(title_text="Procent")
+    fig.update_xaxes(title_text="Liczba wielokrotnisci wystopowania słów")
+
+    fig.update_layout(title_x=0.5, title_font_size=25, autosize=True,  # line_color='black',
+                      #  meanline_visible=True,
+                      # font_color='white',
+                      # hoverlabel_bordercolor='lightseagreen'
+                      )
+    return fig
+
+
+
+def create_line_plot(inverse_cumulative):
+    fig = px.line(x=inverse_cumulative.index + 1, y=inverse_cumulative, title='Odwortny histogram skumulowany',
+                  range_x=[0, 10])
+    fig.update_yaxes(title_text="Procent")
+    fig.update_xaxes(title_text="Liczba wielokrotnisci wystopowania słów ")
+
+    fig.update_layout(title_x=0.5, title_font_size=25, autosize=True,  # line_color='black',
+                      #  meanline_visible=True,
+                      # font_color='white',
+                      # hoverlabel_bordercolor='lightseagreen'
+                      )
     return fig
 
 
@@ -43,7 +75,7 @@ def create_violin_plots(dataset):
 
 def create_bar_plots(graph_common_words, selected_group):
     fig = make_subplots(rows=len(graph_common_words), cols=1, subplot_titles=(
-    "Wszystkie", "Przymiotniki i przysłowki", "Dwa słowa koło siebie", "Trzy słowa koło siebie"),
+        "Wszystkie", "Przymiotniki i przysłowki", "Dwa słowa koło siebie", "Trzy słowa koło siebie"),
                         # vertical_spacing = 0.1,
 
                         )
@@ -51,8 +83,9 @@ def create_bar_plots(graph_common_words, selected_group):
     for i, dataset in enumerate(graph_common_words):
         for color, t in enumerate(selected_group):
             dfp = dataset[dataset['ocena_tekst'] == t]
-            fig.add_trace(go.Bar(x=dfp['word'], y=dfp['count'], name=t, marker_color=default_colors[color], legendgroup=i,
-                                 showlegend=False if i > 0 else True), row=1 + i, col=1)
+            fig.add_trace(
+                go.Bar(x=dfp['word'], y=dfp['count'], name=t, marker_color=default_colors[color], legendgroup=i,
+                       showlegend=False if i > 0 else True), row=1 + i, col=1)
 
     fig.update_layout(height=900, title_x=0.5, autosize=True, title_text="Częstotliwość dokumentów (miara df)")
 
@@ -64,7 +97,11 @@ def create_bar_plots(graph_common_words, selected_group):
 def create_correlation_plots(dataset):
     text_desc_col = ['liczba_znaków', "ocena_tekst"]
     df = dataset.to_pandas()
-    fig = px.violin(df[text_desc_col], color="ocena_tekst")
-    fig.update_layout(title_x=0.5, autosize=True, title_text="Ilość znaków a ocena")
+    # df['token_text_len'] = df['token_text'].apply(len)
+
+    fig = px.violin( df[text_desc_col], color="ocena_tekst")
+    # fig = px.histogram(df,x='token_tekst', color="ocena_tekst")
+
+    fig.update_layout(title_x=0.5, autosize=True, title_text="Liczba znaków a ocena")
 
     return fig
