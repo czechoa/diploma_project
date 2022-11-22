@@ -95,13 +95,13 @@ def create_bar_plots(graph_common_words, selected_group):
 
 
 def create_correlation_plots(dataset):
-    text_desc_col = ['liczba_znaków', "ocena_tekst"]
+    text_desc_col = ['liczba_słów', "ocena_tekst"]
     df = dataset.to_pandas()
     # df['token_text_len'] = df['token_text'].apply(len)
 
     fig = px.violin( df[text_desc_col], color="ocena_tekst")
     # fig = px.histogram(df,x='token_tekst', color="ocena_tekst")
 
-    fig.update_layout(title_x=0.5, autosize=True, title_text="Liczba znaków a ocena")
+    fig.update_layout(title_x=0.5, autosize=True, title_text="Liczba słów a ocena")
 
     return fig

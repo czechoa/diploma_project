@@ -16,6 +16,6 @@ def load_datasets():
 
     db_dict = {values['name']: DataSet(**values) for values in db_information}
 
-    db_dict['połączone'] = DataSet('merge', {0: 'negatywne', 1: 'pozytywne'}, 'ocena_tekstu', db_dict.values())
+    db_dict['połączone'] = DataSet('merge', {0: 'negatywne', 1: 'neutralne',2: 'pozytywne'}, 'ocena_tekstu', db_dict.values())
 
     return db_dict
