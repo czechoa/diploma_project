@@ -2,9 +2,15 @@ import re
 
 import numpy as np
 import psutil
+# from autocorrect import Speller
 from datasets import load_dataset
 
-from dash_app.backend.utils.nlp.text_processing import tokenizing_text, get_adj_adv_from_text
+from dash_app.backend.utils.nlp.text_processing import tokenizing_text, get_adj_adv_from_text, autocorrect
+
+# import language_tool_python
+
+# spell = Speller(lang='pl')
+# tool = language_tool_python.LanguageTool('pl-PL')
 
 pl_char = 'żźćńółęąś'
 
@@ -22,6 +28,8 @@ def maper_text_function(row, mapper_values, target_col, ):
 
     token_text = tokenizing_text(text)
 
+    token_text_with_autocorrect = tokenizing_text(autocorrect(text))
+
     n_of_words = len(token_text)
 
     token_adj_adv = get_adj_adv_from_text(text)
@@ -35,7 +43,9 @@ def maper_text_function(row, mapper_values, target_col, ):
             'liczba_słów': n_of_words,
             'liczba_znaków': len_text,
             'ocena_tekst': target,
-            'token_tekst': token_text, 'token_adj_adv': token_adj_adv,
+            'token_tekst': token_text,
+            'token_tekst_with_autocorrect': token_text_with_autocorrect,
+            'token_adj_adv': token_adj_adv,
             'subset_of_two_words': subset_of_two_words,
             'subset_of_three_words': subset_of_three_words
             }
@@ -81,7 +91,5 @@ def load_dataset_from_hugging_face(name=None, mapper_values=None, target_col=Non
     mapper_function = add_maper_values_to_mapper_function(mapper_values, target_col)
 
     dataDict = dataDict.map(mapper_function, num_proc=psutil.cpu_count(logical=True))
-
-    # dataDict = dataDict.filter(lambda row: row['token_tekst'],)
 
     return dataDict
