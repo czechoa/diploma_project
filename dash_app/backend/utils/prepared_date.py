@@ -2,57 +2,46 @@ import re
 
 import numpy as np
 import psutil
-# from autocorrect import Speller
 from datasets import load_dataset
 
-from dash_app.backend.utils.nlp.text_processing import tokenizing_text, get_adj_adv_from_text, autocorrect
-
-# import language_tool_python
-
-# spell = Speller(lang='pl')
-# tool = language_tool_python.LanguageTool('pl-PL')
+from dash_app.backend.utils.nlp.text_processing import tokenizing_text, get_adj_adv_verb_from_text
 
 pl_char = 'żźćńółęąś'
 
 
 def maper_text_function(row, mapper_values, target_col, ):
-    text = row['text']
+    text_org = row['text']
 
-    text = replace_all_white_space_to_single_space(text)
+    text = replace_all_white_space_to_single_space_and_to_lowercase(text_org)
 
-    n_of_sentences = count_sentences(text)
+    n_of_sentences = count_sentences(text_org)
 
-    len_text = count_characters(text)
-
-    target = mapper_values[abs(row[target_col])]
+    n_of_words = count_words(text)
 
     token_text = tokenizing_text(text)
 
-    token_text_with_autocorrect = tokenizing_text(autocorrect(text))
+    target = mapper_values[abs(row[target_col])]
 
-    n_of_words = len(token_text)
-
-    token_adj_adv = get_adj_adv_from_text(text)
+    token_adj_adv_verb = get_adj_adv_verb_from_text(text)
 
     subset_of_two_words = get_subset_of_two_words(token_text)
 
     subset_of_three_words = get_subset_of_three_words(token_text)
 
-    return {'text': text,
+    return {'text_org': text_org,
             'liczba_zdań': n_of_sentences,
             'liczba_słów': n_of_words,
-            'liczba_znaków': len_text,
+            'liczba_tokenów': len(token_text),
             'ocena_tekst': target,
             'token_tekst': token_text,
-            'token_tekst_with_autocorrect': token_text_with_autocorrect,
-            'token_adj_adv': token_adj_adv,
+            'token_adj_adv_verb': token_adj_adv_verb,
             'subset_of_two_words': subset_of_two_words,
             'subset_of_three_words': subset_of_three_words
             }
 
 
-def replace_all_white_space_to_single_space(text):
-    return re.sub('\s+', " ", text).strip()
+def replace_all_white_space_to_single_space_and_to_lowercase(text):
+    return re.sub('\s+', " ", text).strip().lower()
 
 
 def add_maper_values_to_mapper_function(mapper_values, target_col):

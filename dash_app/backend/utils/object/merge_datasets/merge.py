@@ -11,7 +11,7 @@ def merge_datasets(polemo2, allegro):
 
         allegro_data['ocena_tekst'] = mask_allegro_ocena(allegro_data)
 
-        polemo2_data['ocena_tekst'] = mask_polemo2_ocena(polemo2_data)
+        # polemo2_data['ocena_tekst'] = mask_polemo2_ocena(polemo2_data)
 
         df_merged = pd.concat([allegro_data, polemo2_data])
 
@@ -29,11 +29,8 @@ def remove_empty_token_tekst(data):
 def mask_allegro_ocena(allegro_data):
     rating = allegro_data['rating']
 
-    return allegro_data['ocena_tekst'].mask((rating == 1) | (rating == 2), 'negatywne').mask(rating == 3,
-                                                                                             'neutralne').mask(
-        (rating == 4) | (rating == 5), 'pozytywne')
+    return allegro_data['ocena_tekst'].mask((rating == 1) | (rating == 2), 'negatywne').mask(
+        rating == 3 | (rating == 4), 'dwuznaczne').mask((rating == 5), 'pozytywne')
 
-
-def mask_polemo2_ocena(polemo2_data):
-    return polemo2_data['ocena_tekst'].mask(polemo2_data['ocena_tekst'] == 'dwuznaczne', 'neutralne')
-
+# def mask_polemo2_ocena(polemo2_data):
+#     return polemo2_data['ocena_tekst'].mask(polemo2_data['ocena_tekst'] == 'dwuznaczne', 'neutralne')

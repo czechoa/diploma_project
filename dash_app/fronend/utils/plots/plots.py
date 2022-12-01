@@ -55,13 +55,9 @@ def create_line_plot(inverse_cumulative):
 
 
 def create_violin_plots(dataset):
-    text_desc_col = ['liczba_zdań', 'liczba_słów', 'liczba_znaków']
+    text_desc_col = ['liczba_zdań', 'liczba_słów', 'liczba_tokenów']
 
-    fig = make_subplots(rows=1, cols=3,  # specs=[
-                        #     [{"colspan": 3}, None, None],
-                        #     [{}, {}, {}]
-                        # ],
-                        # subplot_titles=("Target","Second Subplot", "Third Subplot", 'a'),
+    fig = make_subplots(rows=1, cols=3,
                         )
 
     for i, col in enumerate(text_desc_col):

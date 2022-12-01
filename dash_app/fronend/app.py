@@ -108,16 +108,16 @@ def update_dropdown(selected_db_name):
               Input('Radio-items-set', 'value'),
               Input('Dropdown-words', 'value')
               )
-def update_bar_graph(selected_db, set_name, selected_group):
+def update_common_words_graphs(selected_db, set_name, selected_group):
     dataset = db_dict[selected_db]
 
     most_common_words = dataset.common_words[set_name]
-    most_common_adj_adv = dataset.common_words_adj_adv[set_name]
+    most_common_adj_adv_verb = dataset.common_words_adj_adv_verb[set_name]
 
     subset_of_two_words = dataset.subset_of_two_words[set_name]
     subset_of_three_words = dataset.subset_of_three_words[set_name]
 
-    graph_common_words = [most_common_words, most_common_adj_adv, subset_of_two_words, subset_of_three_words]
+    graph_common_words = [most_common_words, most_common_adj_adv_verb, subset_of_two_words, subset_of_three_words]
 
     fig = create_bar_plots(graph_common_words, selected_group)
     return fig
