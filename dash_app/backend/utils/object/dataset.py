@@ -17,7 +17,7 @@ class DataSet:
 
         self.common_words = count_most_frequent_words_to_groupby(self.data, "token_tekst")
 
-        self.common_words_adj_adv = count_most_frequent_words_to_groupby(self.data, "token_adj_adv")
+        self.common_words_adj_adv_verb = count_most_frequent_words_to_groupby(self.data, "token_adj_adv_verb")
 
         self.subset_of_two_words = count_most_frequent_words_to_groupby(self.data, "subset_of_two_words")
 

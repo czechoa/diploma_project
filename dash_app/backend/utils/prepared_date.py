@@ -18,9 +18,9 @@ def maper_text_function(row, mapper_values, target_col, ):
 
     n_of_words = count_words(text)
 
-    token_text = tokenizing_text(text)
-
     target = mapper_values[abs(row[target_col])]
+
+    token_text = tokenizing_text(text)
 
     token_adj_adv_verb = get_adj_adv_verb_from_text(text)
 
