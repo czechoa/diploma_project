@@ -29,7 +29,7 @@ def remove_empty_token_tekst(data):
 def mask_allegro_ocena(allegro_data):
     rating = allegro_data['rating']
 
-    return allegro_data['ocena_tekst'].mask((rating == 1) | (rating == 2), 'negatywne').mask(
+    return allegro_data['ocena_tekst'].mask((rating == 1) , 'negatywne').mask( (rating == 2) |
         (rating == 3) | (rating == 4), 'dwuznaczne').mask((rating == 5), 'pozytywne')
 
 # def mask_polemo2_ocena(polemo2_data):

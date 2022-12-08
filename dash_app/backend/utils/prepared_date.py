@@ -1,5 +1,4 @@
 import re
-
 import numpy as np
 import psutil
 from datasets import load_dataset
@@ -12,7 +11,7 @@ pl_char = 'żźćńółęąś'
 def maper_text_function(row, mapper_values, target_col, ):
     text_org = row['text']
 
-    text = replace_all_white_space_to_single_space_and_to_lowercase(text_org)
+    text = clean_up_text(text_org)
 
     n_of_sentences = count_sentences(text_org)
 
@@ -29,6 +28,7 @@ def maper_text_function(row, mapper_values, target_col, ):
     subset_of_three_words = get_subset_of_three_words(token_text)
 
     return {'text_org': text_org,
+            'text_clean_up': text,
             'liczba_zdań': n_of_sentences,
             'liczba_słów': n_of_words,
             'liczba_tokenów': len(token_text),
@@ -40,8 +40,18 @@ def maper_text_function(row, mapper_values, target_col, ):
             }
 
 
-def replace_all_white_space_to_single_space_and_to_lowercase(text):
-    return re.sub('\s+', " ", text).strip().lower()
+def clean_up_text(text):
+    text = text.lower()
+    text = replace_all_characters_except_alphabetic_character(text)
+    return replace_all_white_space_to_single_space(text)
+
+
+def replace_all_characters_except_alphabetic_character(text):
+    return re.sub(f'[^a-z0-9{pl_char} \n]', ' ', text)
+
+
+def replace_all_white_space_to_single_space(text):
+    return re.sub('\s+', " ", text).strip()
 
 
 def add_maper_values_to_mapper_function(mapper_values, target_col):
