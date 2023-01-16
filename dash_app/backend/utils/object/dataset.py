@@ -13,7 +13,7 @@ class DataSet:
         if not merged_Dataset:
             self.data = load_dataset_from_hugging_face(name, mapper_values, target_col)
         else:
-            self.data = merge_datasets(*merged_Dataset)
+            self.data = merge_datasets(*merged_Dataset,mapper_values)
 
         self.common_words = count_most_frequent_words_to_groupby(self.data, "token_tekst")
 

@@ -23,7 +23,9 @@ def tokenizing_text(text):
 def get_adj_adv_verb_from_text(token_text):
     doc = nlp(token_text)
     token_text = [token.lemma_.lower() for token in doc if
-                  token.pos_ == 'ADV' or token.pos_ == 'ADJ' or token.pos_ == 'VERB']
+                  token.pos_ == 'ADV' or token.pos_ == 'ADJ'
+                  # or token.pos_ == 'VERB'
+                  ]
     return token_text
 
 
