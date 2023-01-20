@@ -2,7 +2,6 @@ import os
 
 import pandas as pd
 from datasets import Dataset, DatasetDict
-from pathlib import Path
 
 def merge_datasets(polemo2, allegro, mask_allegro):
 

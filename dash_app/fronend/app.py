@@ -5,8 +5,9 @@ from dash.dependencies import Input, Output
 from dash_app.backend.db_dictonary import load_datasets
 from dash_app.fronend.dash_layout import create_dash_app_layout
 from dash_app.fronend.utils.plots.colors import return_default_colors
-from dash_app.fronend.utils.plots.plots import create_distribution_of_responses_plot, create_violin_plots,  \
-    create_bar_plots, create_line_plot, create_pdf_bar, create_text_grade_and_length_plots
+from dash_app.fronend.utils.plots.plots import create_distribution_of_responses_plot, create_violin_plots, \
+    create_bar_plots, create_line_plot, create_pdf_bar, create_text_grade_and_length_plots, \
+    create_number_of_words_token_graph
 
 db_dict = load_datasets()
 
@@ -44,11 +45,23 @@ def update_violin_graphs(selected_db_name, set_name):
               Input('Dropdown-db', 'value'),
               Input('Radio-items-set', 'value')
               )
-def update_violin_graphs(selected_db_name, set_name):
+def update_correlation_graphs(selected_db_name, set_name):
     dataset = db_dict[selected_db_name]
     correlation_plots = create_text_grade_and_length_plots(dataset.data[set_name],dataset.mapper_values)
 
     return correlation_plots
+
+
+@app.callback(Output('number-of-words-token-graph', 'figure'),
+
+              Input('Dropdown-db', 'value'),
+              Input('Radio-items-set', 'value')
+              )
+def update_number_of_words_token_graph(selected_db_name, set_name):
+    dataset = db_dict[selected_db_name]
+    number_of_words_token_graph = create_number_of_words_token_graph(dataset.data[set_name], dataset.frequency_of_word_occurrence[set_name] )
+
+    return number_of_words_token_graph
 
 
 @app.callback(Output('number_of_multiples', 'figure'),
@@ -89,18 +102,18 @@ def update_inverse_cumulative_hist_graphs(selected_db_name, set_name):
               )
 def update_dropdown(selected_db_name):
     dataset = db_dict[selected_db_name]
-    list_values = list(dataset.mapper_values.values())
+    labels_names = list(dict.fromkeys(dataset.mapper_values.values()))
 
     options = [{"label": html.Label([str(value)],
                                     style={'color': color, 'font-size': 20
                                            }),
                 "value": str(value)
                 }
-               for value, color in zip(list_values, return_default_colors()[:len(list_values)])
+               for value, color in zip(labels_names, return_default_colors()[:len(labels_names)])
                ]
 
 
-    return options, list_values
+    return options, labels_names
 
 
 @app.callback(Output('bar-graph', 'figure'),
@@ -120,7 +133,7 @@ def update_common_words_graphs(selected_db, set_name, selected_group, options):
     subset_of_three_words = dataset.subset_of_three_words[set_name]
 
     graph_common_words = [most_common_words, most_common_adj_adv_verb, subset_of_two_words, subset_of_three_words]
-    colors_id =[i for i, option in enumerate(options) if option['value'] in selected_group]
+    colors_id, selected_group = zip(*[(i,option['value']) for i, option in enumerate(options) if option['value'] in selected_group])
 
 
     fig = create_bar_plots(graph_common_words, selected_group,colors_id)

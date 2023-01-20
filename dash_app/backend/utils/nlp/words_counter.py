@@ -27,7 +27,7 @@ def count_most_frequent_words_to_groupby(datadict, col):
     for set_name in datadict:
         data = datadict[set_name].to_pandas()
 
-        data = data.groupby('ocena_tekst').apply(count_most_document_frequency_apply(col, 10)).explode()
+        data = data.groupby('ocena_tekst').apply(count_most_document_frequency_apply(col, 1000)).explode()
 
         data = pd.DataFrame(data=data.to_list(), columns=['word', 'count'],
                             index=data.index).reset_index()

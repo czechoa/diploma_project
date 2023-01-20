@@ -14,7 +14,11 @@ def create_dash_app_layout(db_dict):
 
         dcc.Graph(id='violin-graph', ),
 
+        dcc.Graph(id='number-of-words-token-graph', ),
+
         dcc.Graph(id='correlation-graph', ),
+
+
 
         dcc.Graph(id='number_of_multiples'),
 
