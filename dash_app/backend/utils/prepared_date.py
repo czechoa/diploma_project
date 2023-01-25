@@ -17,7 +17,7 @@ def maper_text_function(row, mapper_values, target_col, ):
 
     n_of_words = count_words(text)
 
-    target = mapper_values[abs(row[target_col])]
+    target = mapper_values[row[target_col]]
 
     token_text = tokenizing_text(text)
 
@@ -59,9 +59,9 @@ def add_maper_values_to_mapper_function(mapper_values, target_col):
 
 
 def get_subset_of_two_words(text):
-    if len(text) > 2:
-        return list(np.char.array(text[:-1]) + " " + np.char.array(text[1:]))
-    return list(" ")
+    # if len(text) > 2:
+    return list(np.char.array(text[:-1]) + " " + np.char.array(text[1:]))
+    # return list(" ")
 
 
 def get_subset_of_three_words(text):
@@ -89,6 +89,8 @@ def load_dataset_from_hugging_face(name=None, mapper_values=None, target_col=Non
 
     mapper_function = add_maper_values_to_mapper_function(mapper_values, target_col)
 
-    dataDict = dataDict.map(mapper_function, num_proc=psutil.cpu_count(logical=True))
+    dataDict = dataDict.map(mapper_function, num_proc=psutil.cpu_count(logical=True),load_from_cache_file=True)
+    # drop_last_batch, load_from_cache_file, keep_in_memory
+
 
     return dataDict

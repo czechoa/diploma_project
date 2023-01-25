@@ -12,7 +12,7 @@ def load_datasets():
         {'name': 'allegro_reviews',
          'target_col': 'rating',
          'mapper_values': {1: 'bardzo negatywne', 2: 'negatywne', 3: 'dwuznaczne', 4: 'pozytywne',
-                           5: 'bardzo pozytywne'}
+                               5: 'bardzo pozytywne',-1:'nieznane'}
 
 
          }
@@ -25,7 +25,7 @@ def load_datasets():
 
     db_dict['połączone_3_dwuznaczne'] = DataSet('merge', {1: 'negatywne', 2: 'negatywne',3: 'dwuznaczne','neutralne':'neutralne', 4:'pozytywne', 5:'pozytywne'}, 'ocena_tekstu', polemo2_allegro)
 
-    db_dict['połączone_2_3_4_dwuznaczne'] = DataSet('merge', {1: 'negatywne', 2: 'dwuznaczne',3: 'dwuznaczne', 4:'dwuznaczne','neutralne':'neutralne', 5:'pozytywne'}, 'ocena_tekstu', polemo2_allegro)
+    db_dict['połączone_2_3_4_dwuznaczne'] = DataSet('merge', {1: 'negatywne', 2: 'dwuznaczne',3: 'dwuznaczne', 4:'dwuznaczne','neutralne':'neutralne', 5:'pozytywne',-1:'nieznane'}, 'ocena_tekstu', polemo2_allegro)
 
 
     return db_dict

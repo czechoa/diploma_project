@@ -11,7 +11,7 @@ def create_distribution_of_responses_plot(data: list, maper_values, title='Rozk�
     df = data.to_pandas()
     target = df.groupby(label_name).count()
 
-    labels_names = list(dict.fromkeys(maper_values.values()))
+    labels_names = list(dict.fromkeys(maper_values))
     fig = go.Figure(data=[go.Bar(
         x=labels_names,
         y=100 * target.loc[labels_names, 'text'] / target['text'].sum(),
@@ -28,9 +28,13 @@ def create_distribution_of_responses_plot(data: list, maper_values, title='Rozk�
 
 def create_pdf_bar(word_counter):
     # print(pdf)
-    fig = go.Figure(data=[go.Bar(x=word_counter.index[:10], y=word_counter.iloc[:10] * 100,
+    y = word_counter.iloc[:10] * 100
+    fig = go.Figure(data=[go.Bar(x=word_counter.index[:10], y=y,
                                  # range_x=[0, 10],
-                                 marker_color='lightseagreen'
+                                 marker_color='lightseagreen',
+                                 # text=[f'{x:.1f}' for x in y] ,
+                                 # textposition='auto',
+
                                  )])
 
     fig.update_yaxes(title_text="Procent")
@@ -38,6 +42,7 @@ def create_pdf_bar(word_counter):
 
     fig.update_layout(title_x=0.5, autosize=True,
                       title_text='Częstość wystepowania tokenów',
+
                       )
     return fig
 
@@ -117,28 +122,6 @@ def create_violin_plots(dataset):
     return fig
 
 
-# def create_bar_plots(graph_common_words, selected_group, colors_id):
-#     fig = make_subplots(rows=len(graph_common_words), cols=1, subplot_titles=(
-#         "Wszystkie", "Przymiotniki i przysłowki", "Dwa słowa koło siebie", "Trzy słowa koło siebie"),
-#                         # vertical_spacing = 0.1,
-#
-#                         )
-#
-#     for i, dataset in enumerate(graph_common_words):
-#         for color, t in zip(colors_id, selected_group):
-#             dfp = dataset[dataset['ocena_tekst'] == t].iloc[:10]
-#             fig.add_trace(
-#                 go.Bar(x=dfp['word'], y=dfp['count'], name=t, marker_color=return_default_colors()[color],
-#                        legendgroup=i,
-#                        showlegend=False if i > 0 else True), row=1 + i, col=1)
-#
-#     fig.update_layout(height=900, title_x=0.5, autosize=True, title_text="Częstotliwość dokumentów (miara df)")
-#
-#     fig.update_yaxes(title_text="Częstość")
-#
-#     return fig
-#
-
 def create_bar_plots(graph_common_words, selected_group, colors_id):
     fig = make_subplots(rows=len(graph_common_words), cols=1, subplot_titles=(
         "Wszystkie", "Przymiotniki i przysłowki", "Dwa słowa koło siebie", "Trzy słowa koło siebie"),
@@ -150,17 +133,15 @@ def create_bar_plots(graph_common_words, selected_group, colors_id):
         dataset = dataset[dataset['ocena_tekst'].isin(selected_group)]
 
         words = list(pd.unique(dataset['word']))[:10]
-
         # words = dataset.drop_duplicates(subset='word', keep='first', inplace=True)
 
         for color, label in zip(colors_id, selected_group):
-            df =  dataset[dataset['ocena_tekst'] == label]
+            df = dataset[dataset['ocena_tekst'] == label]
 
             # df = df.take(df[df['word'].isin(words)].order().index)
             # words = df.set_index('word').loc[words].reset_index()
 
             df = df[df['word'].isin(words)]
-
 
             fig.add_trace(
                 go.Bar(x=df['word'], y=df['count']
@@ -194,12 +175,16 @@ def create_number_of_words_token_graph(dataset, frequency_of_word_occurrence):
     fig.add_traces(data=[
         go.Bar(x=x_name, y=[word_count, token_sum],
                name='suma wszytkich',
-               # marker_color=['mediumpurple', 'lightseagreen']
+               # text=[word_count, token_sum]],
+               # textposition='auto',
+               # marker_color=['mediumpurple']
                )
         ,
         go.Bar(x=x_name, y=[word_count_unique, token_unique],
                name='unikalna',
-               # marker_color=['mediumpurple', 'lightseagreen']
+               # text=[word_count, token_sum],
+               # textposition='auto',
+               # marker_color=[ 'lightseagreen']
                )
     ]
     )
@@ -215,7 +200,7 @@ def create_text_grade_and_length_plots(dataset, maper_values):
 
     fig = go.Figure()
 
-    labels_names = list(dict.fromkeys(maper_values.values()))
+    labels_names = list(dict.fromkeys(maper_values))
 
     for color, evaluation in enumerate(labels_names):
         fig.add_trace(go.Violin(x=df['ocena_tekst'][df['ocena_tekst'] == evaluation],
